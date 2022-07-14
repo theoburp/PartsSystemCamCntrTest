@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Custom template | WebGLTest01</title>
+
+    <link rel="stylesheet" href="TemplateData/style.css" />
+
+    <script src="Build/UnityLoader.js"></script>
+</head>
+
+<body>
+    <h2>Parts System Test</h2>
+
+    <!-- Unity Container -->
+    <div class="webgl-content">
+        <div class="centered"
+             style="width: 960px; height: 600px;">
+            <!-- Unity WebGL will be here -->
+            <div id="unity-container"
+                 style="width: 960px; height: 600px;"></div>
+
+            <!-- This is a simple progress bar -->
+            <div id="loader" class="loader">
+                <div class="progressbar">
+                    <div id="fill" class="fill" style="width: 0%;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Place for displaying a message from Unity -->
+    <!-- <div class="centered">
+        <h3>Message from Unity</h3>
+
+        <p id="lblMessage">...</p>
+    </div> -->
+
+    <!-- Message form for sending stuff to Unity -->
+    <div class="message-form centered">
+<!--<h3>Message To Unity</h3>    
+<input type="text"
+           name="txtMessage"
+           id="txtMessage"
+           placeholder="Enter message..." />
+    <button onclick="sendMessageToUnity()">SEND</button>-->
+    
+<!-- <h3>Set Parts</h3>-->  
+<!--<b>HeadParts</b>
+&nbsp;
+            <button onclick="SetParts('0')">#0</button>
+            <button onclick="SetParts('1')">#1</button>
+<br>
+<b>ArmsParts</b>
+&nbsp;
+            <button onclick="SetParts('2')">#2</button>
+            <button onclick="SetParts('3')">#3</button>
+<br>
+<b>LegsParts</b>
+&nbsp;
+            <button onclick="SetParts('4')">#4</button>
+            <button onclick="SetParts('5')">#5</button>
+</div>
+-->
+
+<div align="center">
+<table bgcolor="#ffffff" style="filter:alpha(opacity=80)">
+	<tr><!-- 첫번째 줄 시작 -->
+	    <td><b>HeadParts &nbsp;</b></td>
+	    <td>
+			<button onclick="SetParts('0')">#0</button>
+            <button onclick="SetParts('1')">#1</button>
+		</td>
+	</tr><!-- 첫번째 줄 끝 -->
+	<tr><!-- 두번째 줄 시작 -->
+	    <td><b>ArmsParts &nbsp;</b></td>
+	    <td>
+			<button onclick="SetParts('2')">#2</button>
+            <button onclick="SetParts('3')">#3</button>
+		</td>
+	</tr><!-- 두번째 줄 끝 -->
+	<tr><!-- 세번째 줄 시작 -->
+	    <td><b>LegsParts &nbsp;</b></td>
+	    <td>
+            <button onclick="SetParts('4')">#4</button>
+            <button onclick="SetParts('5')">#5</button>
+		</td>
+	</tr><!-- 세번째 줄 끝 -->
+</table>
+</div>
+
+    <script>
+        // Custom progressbar function
+        function customProgress(unityInstance, progress) {
+            // Change fill of the progress bar
+            const fill = document.getElementById("fill");
+            fill.style.width = progress * 100 + "%";
+
+            // If loaded, remove loader
+            if (progress === 1) {
+                const loader = document.getElementById("loader");
+                loader.remove();
+            }
+        }
+    </script>
+
+    <script>
+        // Unity Initialization
+        var unityInstance = UnityLoader.instantiate(
+            "unity-container",
+            "Build/Build.json",
+            { onProgress: customProgress }
+        );
+    </script>
+
+    <script>
+        // Function which receives a message from Unity
+        function receiveMessageFromUnity(txt) {
+            // Get element to assign the message
+            const lblMessage = document.getElementById("lblMessage");
+
+            // Assign received from Unity message
+            lblMessage.innerText = txt;
+        }
+
+        // Function which sends the message to Unity
+        function sendMessageToUnity() {
+            // Get the input field
+            const txtMessage = document.getElementById("txtMessage");
+            // Get the message
+            const message = txtMessage.value;
+            // Clear the input field
+            txtMessage.value = "";
+
+            // Send message to the Unity scene
+            // Params: "Target object in the scene", "Function name", "Parameters"
+            unityInstance.SendMessage(
+                "[Bridge]",
+                "ReceiveMessageFromPage",
+                message
+            );
+        }
+
+        function SetParts(nftId) {
+			//alert(nftId);
+
+            unityInstance.SendMessage(
+				"[Bridge]",
+                "SetParts",
+                nftId
+            );
+        }
+    </script>
+</body>
+</html>
